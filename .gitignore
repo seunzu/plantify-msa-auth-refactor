@@ -1,0 +1,10 @@
+.DS_Store
+.idea/
+**/.idea/
+.gradle/
+**/.gradle/
+build/
+**/build/
+out/
+*.log
+auth-service/src/main/resources/keys/*.pem
