@@ -1,61 +1,61 @@
 # plantify-msa-auth-refactor
 
-Local lab for comparing two authentication architectures in a Spring Boot MSA.
+Spring Boot MSA 환경에서 인증 구조를 비교하는 로컬 실험 레포
 
-- Baseline: each resource service calls `auth-service /v1/auth/validate-token` on every authenticated request.
-- Refactor target: resource services validate JWTs locally with JWKS-cached public keys.
+- Baseline (`main`): 리소스 서비스가 보호 요청마다 `auth-service /v1/auth/validate-token`을 호출
+- Refactor target (`refactor/jwks-local-validation`): 리소스 서비스가 JWKS로 JWT를 로컬 검증
 
-## Services
+## 핵심 변경
 
-- `auth-service`: copied from the original Plantify auth server `main` branch and simplified for local experiments.
-- `common-auth-lib`: shared Spring Security Resource Server configuration for JWKS local validation. (`refactor/jwks-local-validation` only)
-- `demo-resource-service`: small protected API. On `main` it calls `/v1/auth/validate-token` per request; on `refactor/jwks-local-validation` it validates JWTs locally via `common-auth-lib`.
-- `experiments/k6`: load and failure-window scripts.
-- `docs`: sequence diagrams and performance comparison notes.
+- 보호 API 요청마다 발생하던 auth-service 네트워크 호출 제거
+- 리소스 서비스가 JWKS를 캐싱하고 JWT 서명을 로컬에서 검증
+- auth-service 장애 시에도 캐시된 공개키로 일정 시간 인증 처리 가능
+- 공통 인증 설정을 `common-auth-lib`로 분리
 
-## Local Run
+## 서비스
+
+| 서비스 | 역할 |
+| --- | --- |
+| `auth-service` | 로그인, 실험용 토큰 발급, JWKS 노출 |
+| `common-auth-lib` | 리소스 서비스용 Spring Security Resource Server 자동 설정 |
+| `demo-resource-service` | 인증 구조 비교를 위한 최소 보호 API |
+| `experiments/k6` | 부하 테스트와 장애 윈도우 테스트 스크립트 |
+
+## 로컬 실행
 
 ```bash
 docker compose up --build auth-service demo-resource-service
 ```
 
-Issue a local experiment token:
+실험용 토큰 발급:
 
 ```bash
 curl -X POST http://localhost:8081/v1/auth/dev-token
 ```
 
-In `refactor/jwks-local-validation`, the token is signed with RS256 and resource services validate it through:
+보호 API 호출:
 
-```text
-http://localhost:8081/.well-known/jwks.json
+```bash
+curl http://localhost:8082/api/demo/me \
+  -H "Authorization: Bearer {accessToken}"
 ```
 
-For this local lab, `auth-service` can generate an in-memory RSA key pair if no PEM key files are provided. Do not use that fallback in production. In a real environment, provide stable keys through Kubernetes Secret, KMS, Vault, or another secret manager.
+## 실험 실행
 
-Run the baseline load test:
+기본 부하 테스트:
 
 ```bash
 docker compose --profile test run --rm k6 run /scripts/baseline-auth-call.js
 ```
 
-Run the failure-window test and stop auth during the run:
+JWKS 캐시 후 auth-service 중단 테스트:
 
 ```bash
 docker compose --profile test run --rm k6 run /scripts/auth-failure-window.js
 docker compose stop auth-service
 ```
 
-## CI/CD
+## 문서
 
-This repository currently has CI only. There is no CD target because this lab does not deploy to AWS/EKS yet.
-
-## Docs
-
-- [Architecture overview](docs/architecture-overview.md)
-- [Package responsibilities](docs/package-responsibilities.md)
-- [API response convention](docs/api-response-convention.md)
-- [API spec](docs/api-spec.md)
-- [Baseline sequence](docs/baseline-sequence.md)
-- [Refactor target sequence](docs/refactor-target-sequence.md)
-- [Load test report](docs/load-test-report.md)
+- [Architecture](docs/architecture.md)
+- [Validation and Tests](docs/validation-and-tests.md)
