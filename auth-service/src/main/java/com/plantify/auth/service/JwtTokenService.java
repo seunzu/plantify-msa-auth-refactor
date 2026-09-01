@@ -6,5 +6,5 @@ public interface JwtTokenService {
 
     String createAccessToken(Long userId, Role role);
     String createRefreshToken(Long userId);
-    Long getUserIdFromToken(String token);
+    Long getUserIdFromRefreshToken(String token);
 }

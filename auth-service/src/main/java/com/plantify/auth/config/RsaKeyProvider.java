@@ -1,5 +1,6 @@
 package com.plantify.auth.config;
 
+import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
@@ -15,6 +16,7 @@ import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
 import java.util.UUID;
 
+@Getter
 @Component
 public class RsaKeyProvider {
 
@@ -26,6 +28,7 @@ public class RsaKeyProvider {
                           @Value("${jwt.public-key}") Resource publicKeyResource,
                           @Value("${jwt.key-id}") String keyId) {
         KeyPair fallbackKeyPair = null;
+        // 운영 중 사용 X
         if (!privateKeyResource.exists() || !publicKeyResource.exists()) {
             fallbackKeyPair = generateLocalExperimentKeyPair();
         }
@@ -38,18 +41,6 @@ public class RsaKeyProvider {
         this.keyId = fallbackKeyPair == null
                 ? keyId
                 : "local-generated-" + UUID.randomUUID();
-    }
-
-    public RSAPrivateKey getPrivateKey() {
-        return privateKey;
-    }
-
-    public RSAPublicKey getPublicKey() {
-        return publicKey;
-    }
-
-    public String getKeyId() {
-        return keyId;
     }
 
     private RSAPrivateKey loadPrivateKey(Resource resource) {

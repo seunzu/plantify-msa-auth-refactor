@@ -10,7 +10,6 @@ import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.UnsupportedJwtException;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -18,7 +17,6 @@ import com.plantify.auth.domain.entity.Role;
 
 import java.util.Date;
 
-@Slf4j
 @Component
 @RequiredArgsConstructor
 public class JwtAuthProvider {
@@ -73,16 +71,4 @@ public class JwtAuthProvider {
         }
     }
 
-    public boolean validateToken(String token) {
-        try {
-            Jwts.parserBuilder()
-                    .setSigningKey(rsaKeyProvider.getPublicKey())
-                    .build()
-                    .parseClaimsJws(token);
-            return true;
-        } catch (Exception e) {
-            log.error("Token validation failed: " + e.getMessage(), e);
-            return false;
-        }
-    }
 }

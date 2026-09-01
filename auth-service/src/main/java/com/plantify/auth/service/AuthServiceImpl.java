@@ -36,7 +36,7 @@ public class AuthServiceImpl implements AuthService, AuthInternalService {
     @Override
     public String refreshAccessToken(String authorizationHeader) {
         String token = resolveAccessToken(authorizationHeader);
-        Long userId = jwtTokenService.getUserIdFromToken(token);
+        Long userId = jwtTokenService.getUserIdFromRefreshToken(token);
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ApplicationException(UserErrorCode.USER_NOT_FOUND));
         return jwtTokenService.createAccessToken(userId, user.getRole());

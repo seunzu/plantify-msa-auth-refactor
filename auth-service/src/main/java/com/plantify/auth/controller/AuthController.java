@@ -25,14 +25,15 @@ public class AuthController {
         return ApiResponse.ok(newAccessToken);
     }
 
-    @PostMapping("/dev-token")
-    public ApiResponse<String> createLocalExperimentToken() {
-        return ApiResponse.ok(authService.createAccessTokenForExperiment(1L));
-    }
-
     @GetMapping("/users/search")
     public ApiResponse<Long> getUserId(@RequestParam String username) {
         Long userId = authService.getUserId(username);
         return ApiResponse.ok(userId);
+    }
+
+    // 실험용
+    @PostMapping("/dev-token")
+    public ApiResponse<String> createLocalExperimentToken() {
+        return ApiResponse.ok(authService.createAccessTokenForExperiment(1L));
     }
 }
