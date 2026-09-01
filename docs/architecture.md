@@ -22,7 +22,7 @@
 | `demo-resource-service` | 인증 구조를 비교하는 최소 보호 API |
 | `experiments/k6` | 부하 및 장애 윈도우 트래픽 생성 |
 
-`common-auth-lib`은 `auth.jwk-set-uri`로 `JwtDecoder`를 만들고 stateless 보안 필터 체인을 구성 
+`common-auth-lib`은 `auth.jwk-set-uri`로 `JwtDecoder`를 만들고 stateless 보안 필터 체인을 구성
 
 JWT의 `role` 클레임을 `ROLE_*` 권한으로 매핑해 리소스 서비스가 같은 보안 코드를 반복하지 않게 함
 
@@ -82,6 +82,6 @@ JWKS 응답은 표준 형식이므로 `ApiResponse<T>`로 감싸지 않음
 - 동기 auth-service 호출과 검증 시점의 DB 조회가 제거됨
 - JWKS 최초 조회와 새로운 `kid` 발견 시에는 auth-service가 필요
 - 즉시 토큰 폐기가 필요하면 짧은 Access Token TTL, 블랙리스트, introspection 같은 별도 전략이 필요
-- 현재 실험 코드는 Access/Refresh 토큰 종류를 강제하지 않음
 - issuer/audience 검증은 이번 실험 범위에서 제외
-- 로컬 실험은 PEM 파일이 없으면 RSA 키를 메모리에서 생성한다. 운영에서는 안정된 키를 외부 Secret/KMS/Vault 등으로 관리해야 함
+- 로컬 실험은 PEM 파일이 없으면 RSA 키를 메모리에서 생성
+    - 운영에서는 안정된 키를 외부 Secret/KMS/Vault 등으로 관리해야 함

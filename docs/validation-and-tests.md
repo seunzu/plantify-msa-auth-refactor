@@ -43,7 +43,9 @@ docker compose --profile test run --rm k6 run /scripts/baseline-auth-call.js
 | auth_call_duration 평균 | 16.11 ms |
 | auth_call_duration p95 | 40.02 ms |
 
-`http_reqs: 2,321`은 `/api/demo/me` 1,160회, k6가 직접 호출한 `/validate-token` 1,160회, setup 요청 1회를 합친 값. `/api/demo/me` 내부에서 발생한 demo 서버의 `/validate-token` 호출은 k6의 `http_reqs`에 포함되지 않음
+`http_reqs: 2,321`은 `/api/demo/me` 1,160회, k6가 직접 호출한 `/validate-token` 1,160회, setup 요청 1회를 합친 값
+
+`/api/demo/me` 내부에서 발생한 demo 서버의 `/validate-token` 호출은 k6의 `http_reqs`에 포함되지 않음
 
 ### refactor 결과
 
