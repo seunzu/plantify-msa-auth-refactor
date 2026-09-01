@@ -22,7 +22,9 @@
 | `demo-resource-service` | 인증 구조를 비교하는 최소 보호 API |
 | `experiments/k6` | 부하 및 장애 윈도우 트래픽 생성 |
 
-`common-auth-lib`은 `auth.jwk-set-uri`로 `JwtDecoder`를 만들고 stateless 보안 필터 체인을 구성. JWT의 `role` 클레임을 `ROLE_*` 권한으로 매핑해 리소스 서비스가 같은 보안 코드를 반복하지 않게 함
+`common-auth-lib`은 `auth.jwk-set-uri`로 `JwtDecoder`를 만들고 stateless 보안 필터 체인을 구성 
+
+JWT의 `role` 클레임을 `ROLE_*` 권한으로 매핑해 리소스 서비스가 같은 보안 코드를 반복하지 않게 함
 
 ## 인증 흐름
 
@@ -71,7 +73,9 @@ sequenceDiagram
 | `GET` | `/api/demo/me` | both | 인증된 `userId`와 권한 확인 |
 | `GET` | `/health`, `/actuator/health` | both | 헬스 체크 |
 
-JWKS 응답은 표준 형식이므로 `ApiResponse<T>`로 감싸지 않음. 그 외 `auth-service` 응답은 기존 `ApiResponse<T>` 형식을 따름
+JWKS 응답은 표준 형식이므로 `ApiResponse<T>`로 감싸지 않음
+
+그 외 `auth-service` 응답은 기존 `ApiResponse<T>` 형식을 따름
 
 ## 트레이드오프
 
